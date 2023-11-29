@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  # MySQL container
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: TH1515sp@rt@
+      MYSQL_ROOT_PASSWORD: TH1515sp@rt@
+    ports:
+      - "3306:3306"
+  
+  # Laravel application container
+  app:
+    build:
+      context: .
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+
