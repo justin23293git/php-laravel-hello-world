@@ -4,6 +4,9 @@ FROM php:7.4-apache
 RUN apt-get update -y \
     && apt-get install -y libmcrypt-dev libzip-dev libonig-dev zip unzip
 
+# Install Composer globally
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # Set the working directory
 WORKDIR /app
 
@@ -13,8 +16,9 @@ COPY . /app
 RUN mkdir -p storage/framework/sessions
 RUN chown -R www-data:www-data storage
 
-# Install Composer globally
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Superuser for Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 
 # Install PHP extensions and dependencies
 RUN docker-php-ext-install pdo mbstring zip \
@@ -25,7 +29,8 @@ RUN docker-php-ext-install pdo mbstring zip \
 EXPOSE 8000
 
 # Start the application
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+#CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD php artisan serve --host=0.0.0.0 --port=8000
 
 # Install MySQL client and PDO MySQL extension
 RUN apt-get install -y default-mysql-client \
